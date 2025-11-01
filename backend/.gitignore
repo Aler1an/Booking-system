@@ -1,3 +1,5 @@
 node_modules/
 *.log
 bookings.db
+package.json
+package.json

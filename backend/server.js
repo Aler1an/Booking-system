@@ -10,7 +10,7 @@ app.use(express.json());
 
 const db = await initDB();
 
-// ✅ GET /bookings — отримати всі бронювання
+
 app.get('/bookings', async (req, res) => {
   try {
     const bookings = await db.all('SELECT * FROM bookings');
@@ -20,7 +20,6 @@ app.get('/bookings', async (req, res) => {
   }
 });
 
-// ✅ POST /bookings — створити нове бронювання
 app.post('/bookings', async (req, res) => {
   try {
     const { name, date } = req.body;
