@@ -1,2 +1,2 @@
 SELECT * FROM bookings;
-DELETE FROM bookings where id = 4;
+DELETE FROM bookings where id = 5;
