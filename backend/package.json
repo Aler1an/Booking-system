@@ -4,13 +4,16 @@
     "type": "module",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js"
+        "start": "node server.js",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest"
     },
     "dependencies": {
-      "express": "^4.19.2",
-      "sqlite": "^5.1.1",
-      "sqlite3": "^5.1.6",
-      "cors": "^2.8.5"
+        "cors": "^2.8.5",
+        "express": "^4.19.2",
+        "sqlite": "^5.1.1",
+        "sqlite3": "^5.1.6"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
     }
-  }
-  
+}
