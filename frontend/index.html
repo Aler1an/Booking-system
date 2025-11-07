@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Booking System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Система бронювання</title>
+  <link rel="stylesheet" href="style.css" />  
 </head>
 <body>
-  <h1>Система бронювань</h1>
+  <h1>Система бронювання</h1>
 
-  <button id="loadBtn">Завантажити бронювання</button>
+  <h2>Додати нове бронювання</h2>
+  <form id="bookingForm">
+    <input type="text" id="name" placeholder="Ім'я клієнта" required />
+    <input type="date" id="date" required />
+    <button type="submit">Зберегти</button>
+  </form>
 
-  <ul id="bookingList"></ul>
+  <h2>Список бронювань</h2>
+  <button id="loadBookingsBtn">Завантажити бронювання</button>
+  <ul id="bookingsList"></ul>
 
-  <h2>Додати бронювання</h2>
-  <input type="text" id="name" placeholder="Назва приміщення">
-  <input type="date" id="date">
-  <button id="addBtn">Додати</button>
-
-  <script src="script.js"></script>
+  <script src="script.js"></script> 
 </body>
 </html>
