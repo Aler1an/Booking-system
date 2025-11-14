@@ -4,10 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Система бронювання</title>
-  <link rel="stylesheet" href="style.css" />  
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <h1>Система бронювання</h1>
+
+  <!-- Degraded mode banner -->
+  <div id="degraded" class="hidden">
+    ⚠ Система перевантажена. Повторіть спробу пізніше.
+  </div>
 
   <h2>Додати нове бронювання</h2>
   <form id="bookingForm">
@@ -20,6 +26,9 @@
   <button id="loadBookingsBtn">Завантажити бронювання</button>
   <ul id="bookingsList"></ul>
 
-  <script src="script.js"></script> 
+  <!-- JS-файли -->
+  <script src="http.js"></script>
+  <script src="idempotency.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
