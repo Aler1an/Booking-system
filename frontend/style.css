@@ -1,25 +1,37 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
+  font-family: Arial, sans-serif;
+  margin: 40px;
 }
 
 form, button {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 input {
-    margin-right: 10px;
-    padding: 5px;
+  margin-right: 10px;
+  padding: 5px;
 }
 
 ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 li {
-    margin: 5px 0;
-    padding: 6px;
-    background: #f4f4f4;
-    border-radius: 6px;
+  background: #f4f4f4;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+#degraded {
+  padding: 10px;
+  background: #ffcccc;
+  border: 1px solid #cc0000;
+  color: #900;
+  margin-bottom: 15px;
+}
+
+.hidden {
+  display: none;
 }
