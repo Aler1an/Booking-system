@@ -23,7 +23,14 @@ async function loadBookings() {
     list.innerHTML = "";
     data.forEach(b => {
       const li = document.createElement("li");
-      li.textContent = `${b.name} — ${b.date}`;
+      const d = new Date(b.date);
+      const formatted = d.toLocaleDateString("uk-UA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+});
+
+      li.textContent = `${b.name} — ${formatted}`;
       list.appendChild(li);
     });
 
