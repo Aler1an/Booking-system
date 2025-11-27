@@ -1,31 +1,52 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+// db.js
+import pkg from 'pg';
+import dotenv from 'dotenv';
 
-// Ініціалізація бази даних
+dotenv.config();
+
+const { Pool } = pkg;
+
+export const pool = new Pool({
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'db',   // 'db' = імʼя сервісу в docker-compose
+  database: process.env.DB_NAME || 'booking',
+  password: process.env.DB_PASSWORD || 'password123',
+  port: Number(process.env.DB_PORT) || 5432,
+});
+
+// Створення таблиці при запуску сервера
 export async function initDB() {
-  const db = await open({
-    filename: './bookings.db',
-    driver: sqlite3.Database
-  });
+  try {
+    const client = await pool.connect();
+    console.log("✅ PostgreSQL connected");
 
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS bookings (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      date TEXT NOT NULL
-    );
-  `);
-
-  // Тестові дані
-  const count = await db.get('SELECT COUNT(*) AS c FROM bookings');
-  if (count.c === 0) {
-    await db.run(`INSERT INTO bookings (name, date)
-      VALUES 
-      ('Meeting Room 1', '2025-10-08'),
-      ('Conference Hall', '2025-10-09'),
-      ('Private Office', '2025-10-10')
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS bookings (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        date DATE NOT NULL
+      );
     `);
-  }
 
-  return db;
+    console.log("📦 Table 'bookings' ensured");
+
+    client.release();
+  } catch (err) {
+    console.error("❌ DB init error:", err);
+  }
+}
+
+// --- OPERATIONS ---
+
+export async function getAllBookings(db = pool) {
+  const result = await db.query("SELECT * FROM bookings ORDER BY id DESC");
+  return result.rows;
+}
+
+export async function createBooking(db = pool, { name, date }) {
+  const result = await db.query(
+    "INSERT INTO bookings (name, date) VALUES ($1, $2) RETURNING *",
+    [name, date]
+  );
+  return result.rows[0];
 }
