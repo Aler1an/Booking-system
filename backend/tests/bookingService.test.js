@@ -1,39 +1,25 @@
-import { jest } from '@jest/globals';
+import { jest, describe, test, expect } from '@jest/globals';
 import { createBooking, getAllBookings } from "../service/bookingService.js";
 
+describe("bookingService", () => {
 const mockDB = {
-    data: [],
-    run: jest.fn(async function (query, params) {
-    const [name, date] = params;
-    if (!name || !date) throw new Error("Missing fields");
-    const newItem = { id: this.data.length + 1, name, date };
-    this.data.push(newItem);
-    return { lastID: newItem.id };
-    }),
-    all: jest.fn(async function () {
-    return this.data;
-    }),
+    query: jest.fn(),
 };
 
-describe("bookingService", () => {
-    beforeEach(() => {
-    mockDB.data = []; // очищаємо базу перед кожним тестом
-    });
+test("✅ createBooking — успішне створення", async () => {
+    const mockRow = { id: 1, name: "Test", date: "2024-01-01" };
 
-    test("✅ createBooking — успішне створення", async () => {
-    const booking = await createBooking(mockDB, {
-        name: "John Doe",
-        date: "2025-10-20",
-    });
+    mockDB.query.mockResolvedValueOnce({ rows: [mockRow] });
 
-    expect(booking).toHaveProperty("id");
-    expect(booking.name).toBe("John Doe");
-    expect(mockDB.data.length).toBe(1);
-    });
+    const result = await createBooking(mockDB, { name: "Test", date: "2024-01-01" });
 
-    test("❌ createBooking — помилка при відсутності name", async () => {
-    await expect(
-        createBooking(mockDB, { name: "", date: "2025-10-20" })
-    ).rejects.toThrow();
+    expect(result).toEqual(mockRow);
+    expect(mockDB.query).toHaveBeenCalledTimes(1);
+});
+
+test("❌ createBooking — помилка при відсутності name", async () => {
+    await expect(createBooking(mockDB, { name: "", date: "2024-01-01" }))
+    .rejects
+    .toThrow();
     });
 });
