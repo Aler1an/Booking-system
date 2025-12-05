@@ -8,27 +8,36 @@
 </head>
 <body>
 
-  <h1>Система бронювання</h1>
+  <header>
+    <h1>Система бронювання</h1>
+  </header>
 
   <!-- Degraded mode banner -->
   <div id="degraded" class="hidden">
-    ⚠ Система перевантажена. Повторіть спробу пізніше.
+    ⚠ Система тимчасово перевантажена. Спробуйте пізніше.
   </div>
 
-  <h2>Додати нове бронювання</h2>
-  <form id="bookingForm">
-    <input type="text" id="name" placeholder="Ім'я клієнта" required />
-    <input type="date" id="date" required />
-    <button type="submit">Зберегти</button>
-  </form>
+  <section class="card">
+    <h2>Додати бронювання</h2>
+    <form id="bookingForm" class="form-grid">
+      <input type="text" id="name" placeholder="Ім'я клієнта" required />
+      <input type="date" id="date" required />
+      <button type="submit" class="primary-btn">Зберегти</button>
+    </form>
+  </section>
 
-  <h2>Список бронювань</h2>
-  <button id="loadBookingsBtn">Завантажити бронювання</button>
-  <ul id="bookingsList"></ul>
+  <section class="card">
+    <div class="flex-between">
+      <h2>Список бронювань</h2>
+      <button id="loadBookingsBtn" class="secondary-btn">Завантажити</button>
+    </div>
+    <ul id="bookingsList" class="list"></ul>
+  </section>
 
-  <!-- JS-файли -->
+  <!-- JS -->
   <script src="http.js"></script>
   <script src="idempotency.js"></script>
   <script src="script.js"></script>
+
 </body>
 </html>
