@@ -23,13 +23,11 @@ async function loadBookings() {
     list.innerHTML = "";
     data.forEach(b => {
       const li = document.createElement("li");
-      const d = new Date(b.date);
-      const formatted = d.toLocaleDateString("uk-UA", {
+      const formatted = new Date(b.date).toLocaleDateString("uk-UA", {
         year: "numeric",
         month: "2-digit",
-        day: "2-digit",
-});
-
+        day: "2-digit"
+      });
       li.textContent = `${b.name} — ${formatted}`;
       list.appendChild(li);
     });
@@ -44,34 +42,34 @@ async function loadBookings() {
 bookingForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value;
+  const name = document.getElementById("name").value.trim();
   const date = document.getElementById("date").value;
+
+  if (!name || !date) return;
 
   const payload = { name, date };
   const key = await getIdempotencyKey(payload);
 
   try {
-    const res = await fetchWithResilience(API, {
+    await fetchWithResilience(API, {
       method: "POST",
       body: JSON.stringify(payload),
       idempotencyKey: key,
       retry: { retries: 3, timeoutMs: 3000 }
     });
 
-    const data = await res.json();
-
     failureCount = 0;
     degradedBanner.classList.add("hidden");
 
     alert("Бронювання створено!");
+    bookingForm.reset();
     loadBookings();
 
   } catch (err) {
     failureCount++;
     if (failureCount >= 3) degradedBanner.classList.remove("hidden");
-    alert("❌ Помилка");
+    alert("❌ Помилка під час створення");
   }
 });
 
-// Button
 loadBtn.addEventListener("click", loadBookings);

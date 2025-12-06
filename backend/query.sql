@@ -1,2 +1,2 @@
-SELECT * FROM bookings;
-DELETE FROM bookings where id = 8;
+pip install python-docxpip install python-docx
+DELETE FROM bookings where id = 12;
