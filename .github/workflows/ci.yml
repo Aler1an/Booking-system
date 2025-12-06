@@ -57,7 +57,7 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
           docker tag ghcr.io/aler1an/booking-system-backend:latest \
-                    ghcr.io/Aaler1an/booking-system-backend:${VERSION}
+                    ghcr.io/aler1an/booking-system-backend:${VERSION}
 
       - name: Login to GHCR
         run: |
