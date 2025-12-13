@@ -1,4 +1,4 @@
-import "./otel.js";
+import './otel.js'
 import express from 'express';
 import cors from 'cors';
 import { initDB, pool } from './db.js';
@@ -60,4 +60,4 @@ app.listen(port, () =>
     console.log(`🚀 Server running at http://localhost:${port}`)
 );
 
-// trigger CIddf,adlasdada
+
