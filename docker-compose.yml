@@ -10,21 +10,79 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  api:
-    build:
-      context: ./backend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    env_file:
-      - ./backend/.env
-
   web:
     build:
       context: ./frontend
     ports:
       - "8080:80"
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./observability-demo/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+  tempo:
+    image: grafana/tempo:2.4.1
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes:
+      - ./observability-demo/tempo.yaml:/etc/tempo.yaml:ro
+    ports:
+      - "3200:3200"
+      - "4319:4317"
+
+  loki:
+    image: grafana/loki:2.9.4
+    command: ["-config.file=/etc/loki/local-config.yaml"]
+    volumes:
+      - ./observability-demo/loki-config.yaml:/etc/loki/local-config.yaml:ro
+    ports:
+      - "3100:3100"
+
+  grafana:
+    image: grafana/grafana:10.4.5
+    volumes:
+      - ./observability-demo/grafana/provisioning:/etc/grafana/provisioning:ro
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+      - tempo
+      - loki
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.98.0
+    ports:
+      - "4318:4318"
+      - "4317:4317"
+      - "8889:8889"
+    depends_on:
+      - tempo
+      - loki
+    volumes:
+      - ./observability-demo/otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
+    command: ["--config=/etc/otelcol/config.yaml"]
+
+  booking-api:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_SERVICE_NAME=booking-api
+
+  load-generator:
+    build:
+      context: ./load-generator
+    depends_on:
+      - booking-api
+    environment:
+      API_BASE_URL: "http://booking-api:3000"
+      REQUEST_INTERVAL_MS: 800
+      MAX_PARALLEL: 3
 
 volumes:
   pgdata:

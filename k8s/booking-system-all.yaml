@@ -1,0 +1,93 @@
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-demo
+---
+# ConfigMap для Booking-system
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: booking-system-config
+  namespace: k8s-demo
+data:
+  APP_ENV: "dev"
+---
+# Secret для Booking-system
+apiVersion: v1
+kind: Secret
+metadata:
+  name: booking-system-secret
+  namespace: k8s-demo
+type: Opaque
+stringData:
+  SECRET_TOKEN: "super-secret-booking"
+---
+# Deployment Booking-system
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-system
+  namespace: k8s-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: booking-system
+  template:
+    metadata:
+      labels:
+        app: booking-system
+    spec:
+      containers:
+        - name: booking-system
+          image: booking-system:1.0.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: booking-system-config
+                  key: APP_ENV
+            - name: SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: booking-system-secret
+                  key: SECRET_TOKEN
+---
+# Service Booking-system
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-system
+  namespace: k8s-demo
+spec:
+  selector:
+    app: booking-system
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
+---
+# Ingress Booking-system
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booking-system-ingress
+  namespace: k8s-demo
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: booking-system.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: booking-system
+                port:
+                  number: 80
