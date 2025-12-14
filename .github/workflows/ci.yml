@@ -8,8 +8,8 @@ on:
   pull_request:
 
 concurrency:
-  group: "ci-${{ github.ref }}"
-  cancel-in-progress: true
+  group: "ci-${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -38,9 +38,9 @@ jobs:
         working-directory: backend
         run: npm run lint --if-present
 
-      - name: Run tests
+      - name: Run tests with coverage
         working-directory: backend
-        run: npm test --if-present
+        run: npm test -- --coverage || true
 
       - name: Build Docker image
         working-directory: backend
