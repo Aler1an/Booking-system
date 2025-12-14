@@ -9,7 +9,7 @@
 **Локальний тестовий запуск:**
 
 ```bash
-docker run --rm -p 8081:3000 booking-api:1.0.0
+docker run --rm -p 8082:3000 booking-api:1.0.0
 ```
 
 **Основні ендпоінти:**
